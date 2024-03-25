@@ -546,15 +546,9 @@ secret_link=$(cat "secret.txt")
 wget -O gambar.jpg "$secret_link"
 ```
 
-- Catatan:
-1. Script ini mungkin memerlukan modifikasi untuk bekerja dengan benar, tergantung pada konfigurasi sistem dan file yang digunakan.
-2. Password untuk steghide extract tidak didefinisikan dalam kode.
+hasil akhir :
 
-- Penggunaan:
-1. Pastikan Anda memiliki file yang diperlukan: genshin.zip, genshin_character.zip, list_character.csv.
-2. Jalankan awal.sh.
-3. Periksa file image.log untuk melihat hasil pencarian.
-4. Gambar rahasia akan disimpan sebagai gambar.jpg.
+![alt text](https://media.discordapp.net/attachments/1176233896292122634/1221838658244575323/image.png?ex=661408ec&is=660193ec&hm=64606f9d04c0050af23e53ddaed88b92a86e05558e3405f31347c1ab1b99acd8&=&format=webp&quality=lossless&width=830&height=146)
 
 # SOAL 4
 Dikerjakan oleh Raditya Hardian Santoso (5027231033)
