@@ -4,38 +4,108 @@
 # SOAL 2
 # SOAL 3
 # SOAL 4
+# Soal No 4
+# Dikerjakan oleh Raditya Hardian Santoso (5027231033)
+
+
+Repositori ini berisi skrip untuk memantau penggunaan RAM dan ukuran direktori secara berkala dan mencatat metriknya ke dalam file. Dua skrip utama yang disertakan adalah:
+
+- `minute_log.sh`: Skrip ini mencatat metrik RAM dan ukuran direktori setiap menit.
+- `aggregate_minutes_to_hourly_log.sh`: Skrip ini menggabungkan metrik yang dicatat oleh `minute_log.sh` menjadi ringkasan per jam, termasuk nilai minimum, maksimum, dan rata-ratanya.
+
+Dalam soal ini, kita diminta untuk membuat program yang memonitor ram dan size directory /home/{user} dengan cara memasukkan metrics kedalam file log secara periodik.
+
+## minute_log.sh
+
+Isi skrip saya :
+
+```bash
 #!/bin/bash
-# order_id  order_date  ship_date  ship_mode  customer_id  customer_name  segment  country  city  state  postal_code  region  product_id  category  sub_category  product_name  sales  quantity  discount  profit
-# $1        $2          $3         $4         $5           $6             $7       $8       $9    $10    $11          $12     $13         $14       $15           $16           $17    $18       $19       $20
 
-# subsoal a
-echo "a. pembeli dengan total sales paling tinggi: "
-tail -n +2 Sandbox.csv | awk 'BEGIN { max=0 } $17 > max { max=$17; name=$6 } END { print name }' FS=","
-max=$(tail -n +2 Sandbox.csv | awk 'BEGIN { max=0 } $17 > max { max=$17 } END { print max }' FS=",")
+# Navigasi ke direktori log
+cd /home/kali/log || exit
 
-# subsoal b
-echo "b. customer segment yang memiliki profit paling kecil: "
-tail -n +2 Sandbox.csv | awk -v min="$max" 'BEGIN { FS="," } $20 < min { min=$20; segment=$7 } END { print segment }'
+# Membuat nama file log berdasarkan timestamp
+logfile="metrics_$(date +'%Y%m%d%H%M').log"
 
-# subsoal c
-echo "c. 1. kategori dengan profit tertinggi: "
-cat=$(tail -n +2 Sandbox.csv | awk 'BEGIN { maxxwyn=0 } $20 > maxwynn { maxwynn=$20; cat=$14 } END { print cat }' FS=",")
-maxwynn=$(tail -n +2 Sandbox.csv | awk 'BEGIN { maxxwyn=0 } $20 > maxwynn { maxwynn=$20 } END { print maxwynn }' FS=",")
-echo $cat
+# Mendapatkan metrik RAM menggunakan 'free -m'
+ram_metrics=$(free -m | awk 'NR==2 {print $2","$3","$4","$5","$6","$7}')
 
-echo "c. 2. kategori dengan profit tertinggi kedua: "
-catwo=$(tail -n +2 Sandbox.csv | awk -v maxwynn="$maxwynn" -v cat="$cat" 'BEGIN { maxtwo=0; FS="," } $20 > maxtwo && $20 < maxwynn && $14 != cat { maxtwo=$20; catwo=$14 } END { print catwo }')
-maxtwo=$(tail -n +2 Sandbox.csv | awk -v maxwynn="$maxwynn" 'BEGIN { maxtwo=0; FS="," } $20 > maxtwo && $20 < maxwynn { maxtwo=$20 } END { print maxtwo }')
-echo $catwo
+# Mendapatkan ukuran direktori menggunakan 'du -sh'
+directory="/home/kali/coba/"
+dir_size=$(du -sh $directory | awk '{print $1}')
 
-echo "c. 3. kategori dengan profit tertinggi ketiga: "
-tail -n +2 Sandbox.csv | awk -v maxtwo="$maxtwo" -v cat="$cat" -v catwo="$catwo" 'BEGIN { maxthree=0; FS="," } $20 > maxthree && $20 < maxtwo && $14 != cat && $14 != catwo { maxthree=$20; cathree=$14 } END { print cathree }'
+# Menyimpan metrik RAM, ukuran swap, dan ukuran direktori ke dalam file log
+echo "mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,dir_path,dir_size" > "$logfile"
+echo "$ram_metrics,$(swapon -s | awk 'NR==2 {print $2","$3","$4}'),$directory,$dir_size" >> "$logfile"
 
-# subsoal d
-echo "d. pesanan atas nama adriaens: "
-grep -i "Adriaens .*" Sandbox.csv | awk -F ',' '{print "purchase date: " $2}'
-grep -i "Adriaens .*" Sandbox.csv | awk -F ',' '{print "quantity: " $18}'
+# Mengatur izin agar file log hanya dapat dibaca oleh pemiliknya
+chmod 600 "$logfile"
 
-# beberapa sumber yang digunakan
-# https://stackoverflow.com/questions/28790371/bash-finding-maximum-value-in-a-particular-csv-column
-# https://stackoverflow.com/questions/19075671/how-do-i-use-shell-variables-in-an-awk-script
+```
+Script bash yang pertama (minute_log.sh) akan memasukkan metrics ke dalam file dengan format metrics_{YmdHms}.log setiap menitnya. Script ini juga akan membuat folder dalam directory log dengan format metrics_agg_$(YmdH) dengan nilai H merupakan 1 jam sebelum script dijalankan. Tujuannya agar file log yang digenerate tiap menit tidak berceceran. hasil run:
+
+![alt text](https://cdn.discordapp.com/attachments/1176233896292122634/1221504545960755250/image.png?ex=6612d1c2&is=66005cc2&hm=a610467e45968273627aa85c3b476968f1c8b04ce8b2cd0e9b107fd7cf9996f6&)
+
+Karena minute_log.sh harus dijalankan tiap menit, kita dapat menambahkan line berikut pada crontab (crontab -e):
+```bash
+* * * * * /{path minute_log.sh}
+```
+
+## aggregate_minutes_to_hourly_log.sh
+
+Skrip ini menggabungkan file log per menit menjadi ringkasan per jam, menghitung nilai minimum, maksimum, dan rata-rata untuk setiap metrik.
+
+Script bash yang kedua (aggregate_minutes_to_hourly_log.sh) akan menggabungkan file log yang dibuat minute_log.sh dan akan menyimpan nilai minimum, maximum, dan rata-rata tiap metrics setiap jam. Caranya adalah dengan membaca seluruh file log yang berada dalam folder metrics_agg_$(YmdH).
+
+Isi skrip saya :
+
+```bash
+#!/bin/bash
+
+# Navigasi ke direktori log
+cd /home/kali/log || exit
+
+# Membuat nama file log agregasi berdasarkan timestamp
+agglogfile="metrics_agg_$(date +'%Y%m%d%H').log"
+
+# Mendapatkan kolom yang akan diambil rata-rata, minimum, dan maksimum
+columns="2,3,4,5,6,7,8,9,10,11,12"
+
+# Mencatat nilai minimum, maksimum, dan rata-rata
+minimum=$(awk -F',' 'NR>1 {print $'$columns'}' metrics_*.log | sort -t, -n | head -n 1)
+maximum=$(awk -F',' 'NR>1 {print $'$columns'}' metrics_*.log | sort -t, -n | tail -n 1)
+average=$(awk -F',' -v col="$columns" 'BEGIN {sum=0; count=0} NR>1 {split(col, arr, ","); for (i in arr) sum+=$arr[i]; count++} END {print sum/count}' metrics_*.log)
+
+# Mengubah satuan hasil
+minimum=$(echo $minimum | sed 's/M/ MB/g')
+maximum=$(echo $maximum | sed 's/M/ MB/g')
+average=$(printf "%.2f" $average) # Mengatur dua angka di belakang koma untuk rata-rata
+
+# Menyimpan hasil agregasi ke dalam file log
+echo "type,mem_total,mem_used,mem_free,mem_shared,mem_buff,mem_available,swap_total,swap_used,swap_free,path,path_size" > "$agglogfile"
+echo "minimum,$minimum" >> "$agglogfile"
+echo "maximum,$maximum" >> "$agglogfile"
+echo "average,$average" >> "$agglogfile"
+
+# Mengatur izin agar file log hanya dapat dibaca oleh pemiliknya
+chmod 600 "$agglogfile"
+
+```
+
+Untuk mendapatkan nilai average, kita dapat mencatat index, yaitu jumlah file log yang terdapat dalam folder. Selanjutnya kita juga akan mencatat nilai sum/total dari masing-masing metrics yang kemudian akan dibagi dengan index untuk mendapatkan nilai average.
+
+Selanjutnya, untuk mendapat nilai minimum dan maximum kita dapat menyimpan masing-masing value metrics ke dalam array lalu melakukan sort sehingga nilai minimum masing-masing metrics akan berada pada index paling awal dan nilai maximum masing-masing metrics akan berada pada index paling akhir. Kita juga akan menggunakan chown agar log hanya dapat dibaca user.
+
+hasil run:
+
+![alt text](https://cdn.discordapp.com/attachments/1176233896292122634/1221504764857028608/image.png?ex=6612d1f6&is=66005cf6&hm=ca3e8774192fa09367ce9ed864cf1756ccffc99fc2c3adb462e53d329592f91b&)
+
+
+Agar aggregate_minutes_to_hourly_log.sh dapat dijalankan tiap jam, kita dapat menambahkan line berikut pada crontab:
+
+```bash
+0 * * * * /{path aggregate_minutes_to_hourly_log.sh}
+```
+
+
