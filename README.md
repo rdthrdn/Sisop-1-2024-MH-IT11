@@ -65,13 +65,20 @@ grep -i "Adriaens .*" Sandbox.csv | awk -F ',' '{print "purchase date: " $2}'
 grep -i "Adriaens .*" Sandbox.csv | awk -F ',' '{print "quantity: " $18}'
 ```
 Fungsi ini pertama tama mencari kolom yang mengandung `"Adriaens .*"` (Adriaens dan wildcard karena terdapat nama akhir yang tidak diketahui) lalu di pipe ke dalam fungsi `awk` yang mengoutput `purchase date` serta `quantity`
+
 # SOAL 2
+
 ## Overview
+
 Dikerjakan oleh Rafi' Afnaan Fathurrahman (5027231040)
 Pengerjaan soal ini menggunakan 2 file script bash, yaitu:
 - `Register.sh`: Pengguna melakukan registrasi akun baru dan data tersebut diletakkan ke dalam file `users.txt`. Setiap kali pengguna berhasil atau gagal melakukan registrasi sebuah akun baru, akan dicatat kedalam `auth.log`
 - `Login.sh`: Pengguna melakukan login menggunakan akun yang sudah ada di dalam file `users.txt`. Setiap kali pengguna berhasil atau gagal melakukan login sebuah akun baru, akan dicatat kedalam `auth.log`. Disini pengguna bisa masuk sebagai `user` atau `admin` tergantung akun yang digunakan untuk login. `Admin` dapat menambah, mengubah dan menghapus pengguna
 ## Register.sh
+
+CODE TELAH DIREVISI:
+- TIDAK MEWAJIBKAN PENGGUNAAN SIMBOL PADA PASSWORD
+
 ```bash
 #!/bin/bash
 
@@ -125,7 +132,7 @@ data
 
 read -s -p "Enter your password (minimum of 8 characters, at least 1 upperase, 1 lowercase letter, 1 digit, 1 symbol): " password
 echo ""
-if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" =~ [^a-zA-Z0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
+if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
     if [[ $l_email =~ .*admin.* || $l_name =~ .*admin.* ]]; then
         status="admin"
     else
@@ -160,9 +167,9 @@ if grep -q "^$email:" users.txt; then
 fi
 ```
 
-Selanjutnya password akan diperiksa kekuatannya dengan melihat apakah password mengandung setidaknya 1 dari masing masing: `uppercase`, `lowercase`, `number`, `symbol` dan tidak sama dengan `username` dan `email` menggunakan code:
+Selanjutnya password akan diperiksa kekuatannya dengan melihat apakah password mengandung setidaknya 1 dari masing masing: `uppercase`, `lowercase`, `number` dan tidak sama dengan `username` dan `email` menggunakan code:
 ```bash
-if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" =~ [^a-zA-Z0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
+if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
     # code
 fi
 ```
@@ -180,6 +187,10 @@ Yang akan menampilkan waktu dalam format dd/mm/yyyy hh:mm:ss
 
 Terdapat beberapa fungsi tambahan didalam program ini yang memiliki fungsi visual.
 ## Login.sh
+
+CODE TELAH DIREVISI:
+- TIDAK MEWAJIBKAN PENGGUNAAN SIMBOL PADA PASSWORD
+
 ```bash
 #!/bin/bash
 
@@ -248,6 +259,7 @@ flag()
 {
     echo "c2lzb3B7dzNsYzBtM190MF90aDNfYzAwbF9rMWQ1X2NsdWJ9Cg==" | base64 --decode
     xdg-open "https://cdn.discordapp.com/attachments/1215177202618998824/1218115119192608908/me_when.jpg?ex=660fb79b&is=65fd429b&hm=50d40698f564184adf148d1f4a5d3040bdf8c1e704b8cf34dd9070369fc58345&"
+    exit 0
 }
 
 admin_login()
@@ -285,14 +297,14 @@ admin_login()
             data
             read -s -p "Enter password: " password
             echo ""
-            if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" =~ [^a-zA-Z0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
+            if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
                 if [[ $l_email =~ .*admin.* || $l_name =~ .*admin.* ]]; then
                     status="admin"
                 else
                     status="user"
                 fi
 
-                $passwd=$password
+                passwd=$password
                 data
                 echo "Registration successful"
                 e_password=$(echo "$password" | base64)
@@ -326,14 +338,14 @@ admin_login()
             data
             read -s -p "Enter new password: " password
             echo ""
-            if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" =~ [^a-zA-Z0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
+            if [[ ${#password} -ge 8 && "$password" =~ [A-Z] && "$password" =~ [a-z] && "$password" =~ [0-9] && "$password" != "$email" && "$password" != "$username" ]]; then
                 if [[ $l_email =~ .*admin.* || $l_name =~ .*admin.* ]]; then
                     status="admin"
                 else
                     status="user"
                 fi
 
-                $passwd=$password
+                passwd=$password
                 data
                 echo "Edit successful"
                 e_password=$(echo "$password" | base64)
