@@ -66,6 +66,10 @@ grep -i "Adriaens .*" Sandbox.csv | awk -F ',' '{print "quantity: " $18}'
 ```
 Fungsi ini pertama tama mencari kolom yang mengandung `"Adriaens .*"` (Adriaens dan wildcard karena terdapat nama akhir yang tidak diketahui) lalu di pipe ke dalam fungsi `awk` yang mengoutput `purchase date` serta `quantity`
 
+Berikut adalah dokumentasi dari hasil eksekusi code:
+![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/44537cb6-706a-4d44-8e84-7465a9ae134a)
+
+
 # SOAL 2
 
 ## Overview
@@ -186,6 +190,12 @@ timedate=$(date +"%d/%m/%Y %H:%M:%S")
 Yang akan menampilkan waktu dalam format dd/mm/yyyy hh:mm:ss
 
 Terdapat beberapa fungsi tambahan didalam program ini yang memiliki fungsi visual.
+
+Berikut adalah dokumentasi hasil eksekusi code:
+![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/3ab3acd7-c89b-4115-9108-a447ec33a2fd)
+![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/fa762a76-d0d8-4fdb-908f-2b0009db492e)
+
+
 ## Login.sh
 
 CODE TELAH DIREVISI:
@@ -461,17 +471,31 @@ fi
 ```
 Jika memilih opsi `login`, maka pengguna akan memasukkan `email` dan memasukkan `password`nya. Jika berhasil login, akan ada dua outcome:
 - Jika pengguna terdaftar sebagai `admin`, maka pengguna akan masuk ke menu pengguna admin
+  ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/fce8b153-619c-4151-8c19-4fde7c8deeb5)
+
 - Jika terdaftar sebagai `user` maka tidak akan terjadi apa apa
+  ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/a7995193-f294-4008-8f8c-0cbd238b5221)
+
 
 Karena password disimpan di dalam `users.txt` dalam enkripsi basis 64, maka sebelum digunakan di dalam program, password didekripsi terlebih dahulu menggunakan
 ```bash
 decode_pass=$(grep -i "$email" users.txt | awk -F ':' '{print $6}' | base64 --decode)
 ```
+![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/7b329f53-c6ca-45b6-b1cd-fcaf1ac43643)
+
 
 Jika berhasil `login` sebagai `admin`, maka akan muncul 4 opsi:
 1. `Add user`: Menambahkan pengguna baru sesuai dengan prinsip yang sama dengan `Register.sh`
+   ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/fb5f1702-3956-4f18-bf11-9c33b0457e12)
+
 2. `Edit user`: Mengubah data sebuah pengguna dengan cara menghapus data yang sebelumnya dan menggantinya dengan data yang baru dimasukkan sesuai dengan prinsip yang digunakan di `Register.sh`
+   ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/58510f4e-c185-4e08-90d5-b860a304ae27)
+   ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/f0c09b64-e28f-44af-af24-2409931791de)
+   ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/cd36f265-1515-435b-9e85-3d812d1e49b4)
+
 3. `Delete user`: Menghapus data pengguna dengan cara mencari data yang memiliki email yang sesuai dengan yang dimasukkan pengguna, lalu menghapusnya menggunakan: `sed -i "/$email/d" users.txt` (`Edit user` juga menggunakan code yang sama untuk menghapus data yang lama)
+   ![image](https://github.com/rdthrdn/Sisop-1-2024-MH-IT11/assets/143690594/33eda5f1-0c3b-43e2-88e4-561aab43915f)
+
 4. `Logout`: Menghentikan program tersebut
 
 Terdapat beberapa fungsi tambahan didalam program ini yang memiliki fungsi visual.
