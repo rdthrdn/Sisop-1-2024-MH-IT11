@@ -2,6 +2,9 @@
 # order_id  order_date  ship_date  ship_mode  customer_id  customer_name  segment  country  city  state  postal_code  region  product_id  category  sub_category  product_name  sales  quantity  discount  profit
 # $1        $2          $3         $4         $5           $6             $7       $8       $9    $10    $11          $12     $13         $14       $15           $16           $17    $18       $19       $20
 
+# download file dari gdrive
+wget -O Sandbox.csv "https://drive.google.com/uc?export=download&id=1cC6MYBI3wRwDgqlFQE1OQUN83JAreId0"
+
 # subsoal a
 echo "a. pembeli dengan total sales paling tinggi: "
 tail -n +2 Sandbox.csv | awk 'BEGIN { max=0 } $17 > max { max=$17; name=$6 } END { print name " " max }' FS=","
