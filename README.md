@@ -692,4 +692,13 @@ Agar aggregate_minutes_to_hourly_log.sh dapat dijalankan tiap jam, kita dapat me
 0 * * * * /{path aggregate_minutes_to_hourly_log.sh}
 ```
 
+# Kendala yang dialami 
+Kendala yang saya alami selama pengerjaan soal nomor 4 ini adalah hasil dari eksekusi aggregate per-jamnya yang memiliki nilai tidak wajar yaitu memiliki nilai memory satuan yang harusnya ribuan, seperti berikut : 
 
+![alt text](https://cdn.discordapp.com/attachments/1176233896292122634/1221504764857028608/image.png?ex=6612d1f6&is=66005cf6&hm=ca3e8774192fa09367ce9ed864cf1756ccffc99fc2c3adb462e53d329592f91b&)
+
+yang harusnya seperti ini : 
+
+![alt text](https://media.discordapp.net/attachments/1176233896292122634/1223602120142360708/image.png?ex=661a7346&is=6607fe46&hm=69e0e547b134883cb8dc5219cf313645c88033e5346d2d5035f88e00740fbf36&=&format=webp&quality=lossless&width=880&height=175)
+
+Sudah saya coba membuat berbagai logika, tetapi hasilnya antara aggregate tidak muncul. Atau hasilnya menjadi terlalu besar.
